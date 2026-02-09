@@ -43,6 +43,11 @@ function factorsEqual(a: number, b: number) {
   return Math.abs(a - b) <= scale * 1e-12;
 }
 
+function csvEscape(value: string) {
+  const escaped = value.replace(/"/g, "\"\"");
+  return `"${escaped}"`;
+}
+
 export function Calculator() {
   const rows = config.rows;
   const keyOutputLabels = useMemo(() => (
@@ -168,6 +173,114 @@ export function Calculator() {
     return selectedOption ?? unitOptions[0];
   }
 
+  function getSectionRows(section: string) {
+    let sectionRows = rows.filter(
+      r => (r.section ?? "").trim() === section && !totalRowIds.has(r.id),
+    );
+
+    if (section === "Imaging") {
+      sectionRows = sectionRows.filter(r => !movedToImagingIds.has(r.id));
+      const movedRows = rows.filter(r => movedToImagingIds.has(r.id));
+      const insertIndex = sectionRows.findIndex(r => r.id === "total_scanning_time");
+      if (insertIndex >= 0) {
+        sectionRows = [
+          ...sectionRows.slice(0, insertIndex),
+          ...movedRows,
+          ...sectionRows.slice(insertIndex),
+        ];
+      } else {
+        sectionRows = [...sectionRows, ...movedRows];
+      }
+    }
+
+    if (section === "Stage movements") {
+      sectionRows = sectionRows.filter(r => !movedToImagingIds.has(r.id));
+    }
+
+    return sectionRows;
+  }
+
+  function visibleRowsForSection(section: string) {
+    const sectionRows = getSectionRows(section);
+    if (sectionRows.length === 0) return [];
+    const inputRows = sectionRows.filter(r => r.kind === "input");
+    const outputRows = sectionRows.filter(r => r.kind === "output");
+    const orderedRows = [...inputRows, ...outputRows];
+    const isSectionCollapsed = collapsedSections[section] ?? false;
+    const sectionBaseRows = isSectionCollapsed
+      ? orderedRows.filter(isKeyOutputRow)
+      : orderedRows;
+    const keyOutputRows = sectionBaseRows.filter(isKeyOutputRow);
+    const nonKeyRows = sectionBaseRows.filter(r => !isKeyOutputRow(r));
+    const showCollapsedRows = showCollapsedRowsBySection[section] ?? false;
+    const visibleNonKeyRows = nonKeyRows.filter(r => showCollapsedRows || !defaultCollapsedRowIds.has(r.id));
+    return [...visibleNonKeyRows, ...keyOutputRows];
+  }
+
+  function displayValueForRow(r: RowDef) {
+    return r.kind === "input"
+      ? state[r.id].displayValue
+      : fromBase(baseValues[r.id], state[r.id].toBase ?? r.toBaseFactor ?? null);
+  }
+
+  function displayUnitForRow(r: RowDef) {
+    const unitOptions = unitOptionsForBase(r.baseUnit);
+    const selectedOption = selectedUnitOptionFor(r.id, r, unitOptions);
+    return selectedOption?.label ?? r.displayUnit ?? "";
+  }
+
+  function exportVisibleRowsCsv() {
+    const lines: string[] = [];
+    lines.push([
+      "Section",
+      "Parameter",
+      "Type",
+      "Value",
+      "Unit",
+    ].map(csvEscape).join(","));
+
+    for (const section of sections) {
+      const visibleRows = visibleRowsForSection(section);
+      for (const r of visibleRows) {
+        const value = displayValueForRow(r);
+        lines.push(
+          [
+            section,
+            r.label,
+            r.kind,
+            Number.isFinite(value) ? String(value) : "",
+            displayUnitForRow(r),
+          ].map(csvEscape).join(","),
+        );
+      }
+    }
+
+    for (const r of totalRows) {
+      const value = displayValueForRow(r);
+      lines.push(
+        [
+          "Total",
+          r.label,
+          r.kind,
+          Number.isFinite(value) ? String(value) : "",
+          displayUnitForRow(r),
+        ].map(csvEscape).join(","),
+      );
+    }
+
+    const csv = lines.join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const day = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `connectome_timeline_parameters_${day}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   function renderRow(id: string) {
     const r = rows.find(x => x.id === id);
     if (!r) return null;
@@ -278,44 +391,26 @@ export function Calculator() {
 
   return (
     <>
+      <div className="exportFixedWrap">
+        <button
+          type="button"
+          className="exportFixedBtn"
+          onClick={exportVisibleRowsCsv}
+        >
+          Export CSV
+        </button>
+      </div>
+
       {sections.map(section => {
-        let sectionRows = rows.filter(
-          r => (r.section ?? "").trim() === section && !totalRowIds.has(r.id),
-        );
-
-        if (section === "Imaging") {
-          sectionRows = sectionRows.filter(r => !movedToImagingIds.has(r.id));
-          const movedRows = rows.filter(r => movedToImagingIds.has(r.id));
-          const insertIndex = sectionRows.findIndex(r => r.id === "total_scanning_time");
-          if (insertIndex >= 0) {
-            sectionRows = [
-              ...sectionRows.slice(0, insertIndex),
-              ...movedRows,
-              ...sectionRows.slice(insertIndex),
-            ];
-          } else {
-            sectionRows = [...sectionRows, ...movedRows];
-          }
-        }
-
-        if (section === "Stage movements") {
-          sectionRows = sectionRows.filter(r => !movedToImagingIds.has(r.id));
-        }
-
+        const sectionRows = getSectionRows(section);
         if (sectionRows.length === 0) return null;
 
-        const inputRows = sectionRows.filter(r => r.kind === "input");
-        const outputRows = sectionRows.filter(r => r.kind === "output");
         const isSectionCollapsed = collapsedSections[section] ?? false;
-        const orderedRows = [...inputRows, ...outputRows];
-        const sectionBaseRows = isSectionCollapsed
-          ? orderedRows.filter(isKeyOutputRow)
-          : orderedRows;
-        const keyOutputRows = sectionBaseRows.filter(isKeyOutputRow);
-        const nonKeyRows = sectionBaseRows.filter(r => !isKeyOutputRow(r));
-        const hasOptionalRows = nonKeyRows.some(r => defaultCollapsedRowIds.has(r.id));
+        const visibleRows = visibleRowsForSection(section);
+        const keyOutputRows = visibleRows.filter(isKeyOutputRow);
+        const visibleNonKeyRows = visibleRows.filter(r => !isKeyOutputRow(r));
+        const hasOptionalRows = sectionRows.some(r => !isKeyOutputRow(r) && defaultCollapsedRowIds.has(r.id));
         const showCollapsedRows = showCollapsedRowsBySection[section] ?? false;
-        const visibleNonKeyRows = nonKeyRows.filter(r => showCollapsedRows || !defaultCollapsedRowIds.has(r.id));
         const hasVisibleRows = visibleNonKeyRows.length > 0 || keyOutputRows.length > 0;
         const shouldShowColumnHead = hasVisibleRows;
 

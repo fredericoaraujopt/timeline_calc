@@ -59,6 +59,26 @@ a{ color: inherit; }
   margin-top: 14px;
 }
 
+.exportFixedWrap{
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 80;
+}
+
+.exportFixedBtn{
+  border: 1px solid rgba(255,255,255,0.5);
+  background: rgba(2,43,58,0.78);
+  color: #f2fbff;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1;
+  padding: 9px 12px;
+  cursor: pointer;
+  font-family: var(--font-sans), ui-sans-serif, system-ui;
+  box-shadow: 0 6px 20px rgba(2,43,58,0.25);
+}
+
 .section h2{
   margin: 0;
   font-size: 18px;
@@ -397,6 +417,13 @@ a{ color: inherit; }
 }
 
 @media (max-width: 620px){
+  .exportFixedWrap{
+    top: 10px;
+    right: 10px;
+  }
+  .exportFixedBtn{
+    padding: 8px 10px;
+  }
   .container{
     padding: 20px 12px 36px;
   }
