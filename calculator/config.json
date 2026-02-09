@@ -1,0 +1,844 @@
+{
+  "meta": {
+    "title": "Connectome Timeline Calculator",
+    "sourceExcel": "Timeline to build a connectome.xlsx",
+    "notes": [
+      "Config extracted automatically from the provided spreadsheet (Sheet1, A1:E45).",
+      "Spreadsheet correction applied: row B18 uses B17 (wafer duty cycle) instead of blank C16."
+    ]
+  },
+  "rows": [
+    {
+      "id": "length_along_cutting_axis",
+      "row": 3,
+      "section": "Cutting and collecting",
+      "label": "Length along cutting axis",
+      "kind": "input",
+      "excel": {
+        "cell": "B3",
+        "formula": null
+      },
+      "displayUnit": "µm",
+      "toBaseFactor": 1e-06,
+      "baseUnit": "m",
+      "defaultDisplayValue": 600.0
+    },
+    {
+      "id": "section_thickness",
+      "row": 4,
+      "section": "Cutting and collecting",
+      "label": "Section thickness",
+      "kind": "input",
+      "excel": {
+        "cell": "B4",
+        "formula": null
+      },
+      "displayUnit": "nm",
+      "toBaseFactor": 1e-09,
+      "baseUnit": "m",
+      "defaultDisplayValue": 100.0
+    },
+    {
+      "id": "number_of_sections",
+      "row": 5,
+      "section": "Cutting and collecting",
+      "label": "Number of sections",
+      "kind": "output",
+      "excel": {
+        "cell": "B5",
+        "formula": "=B3*D3/(B4*D4)"
+      },
+      "displayUnit": null,
+      "toBaseFactor": null,
+      "baseUnit": null
+    },
+    {
+      "id": "length_along_cutting_direction",
+      "row": 6,
+      "section": "Cutting and collecting",
+      "label": "Length along cutting direction",
+      "kind": "input",
+      "excel": {
+        "cell": "B6",
+        "formula": null
+      },
+      "displayUnit": "mm",
+      "toBaseFactor": 0.001,
+      "baseUnit": "m",
+      "defaultDisplayValue": 0.4
+    },
+    {
+      "id": "cutting_speed",
+      "row": 7,
+      "section": "Cutting and collecting",
+      "label": "Cutting speed",
+      "kind": "input",
+      "excel": {
+        "cell": "B7",
+        "formula": null
+      },
+      "displayUnit": "mm/s",
+      "toBaseFactor": 0.001,
+      "baseUnit": "m/s",
+      "defaultDisplayValue": 4.0
+    },
+    {
+      "id": "cutting_time_for_one_section",
+      "row": 8,
+      "section": "Cutting and collecting",
+      "label": "Cutting time for one section",
+      "kind": "output",
+      "excel": {
+        "cell": "B8",
+        "formula": "=B6*D6/(B7*D7)"
+      },
+      "displayUnit": "seconds",
+      "toBaseFactor": null,
+      "baseUnit": "s"
+    },
+    {
+      "id": "time_for_microtome_arm_movement",
+      "row": 9,
+      "section": "Cutting and collecting",
+      "label": "Time for microtome arm movement",
+      "kind": "input",
+      "excel": {
+        "cell": "B9",
+        "formula": null
+      },
+      "displayUnit": "seconds",
+      "toBaseFactor": null,
+      "baseUnit": "s",
+      "defaultDisplayValue": 2.9
+    },
+    {
+      "id": "time_for_one_cutting_cycle",
+      "row": 10,
+      "section": "Cutting and collecting",
+      "label": "Time for one cutting cycle",
+      "kind": "output",
+      "excel": {
+        "cell": "B10",
+        "formula": "=B8+B9"
+      },
+      "displayUnit": "seconds",
+      "toBaseFactor": null,
+      "baseUnit": "s"
+    },
+    {
+      "id": "total_cutting_time",
+      "row": 11,
+      "section": "Cutting and collecting",
+      "label": "Total cutting time",
+      "kind": "output",
+      "excel": {
+        "cell": "B11",
+        "formula": "=B5*B10/D11"
+      },
+      "displayUnit": "hours",
+      "toBaseFactor": 3600.0,
+      "baseUnit": "s"
+    },
+    {
+      "id": "area_of_one_section",
+      "row": 12,
+      "section": "Cutting and collecting",
+      "label": "Area of one section",
+      "kind": "input",
+      "excel": {
+        "cell": "B12",
+        "formula": "=0.5*0.3*0.5"
+      },
+      "displayUnit": "mm²",
+      "toBaseFactor": 1e-06,
+      "baseUnit": "m²",
+      "defaultDisplayValue": 0.08
+    },
+    {
+      "id": "area_for_one_4_inch_wafer",
+      "row": 13,
+      "section": "Cutting and collecting",
+      "label": "Area for one 4-inch wafer",
+      "kind": "input",
+      "excel": {
+        "cell": "B13",
+        "formula": null
+      },
+      "displayUnit": "mm²",
+      "toBaseFactor": 1e-06,
+      "baseUnit": "m²",
+      "defaultDisplayValue": 7854.0
+    },
+    {
+      "id": "wafer_capacity",
+      "row": 14,
+      "section": "Cutting and collecting",
+      "label": "Wafer capacity",
+      "kind": "input",
+      "excel": {
+        "cell": "B14",
+        "formula": null
+      },
+      "displayUnit": "%",
+      "toBaseFactor": 0.01,
+      "baseUnit": null,
+      "defaultDisplayValue": 25.0
+    },
+    {
+      "id": "sections_that_fit_in_one_4_inch_wafer",
+      "row": 15,
+      "section": "Cutting and collecting",
+      "label": "# sections that fit in one 4-inch wafer",
+      "kind": "output",
+      "excel": {
+        "cell": "B15",
+        "formula": "=B13*B14*D14/B12"
+      },
+      "displayUnit": null,
+      "toBaseFactor": null,
+      "baseUnit": null
+    },
+    {
+      "id": "of_wafers_required",
+      "row": 16,
+      "section": "Cutting and collecting",
+      "label": "# of wafers required",
+      "kind": "output",
+      "excel": {
+        "cell": "B16",
+        "formula": "=CEILING(B5/B15,1)"
+      },
+      "displayUnit": null,
+      "toBaseFactor": null,
+      "baseUnit": null
+    },
+    {
+      "id": "time_for_wafer_duty_cycle",
+      "row": 17,
+      "section": "Cutting and collecting",
+      "label": "Time for wafer duty cycle",
+      "kind": "input",
+      "excel": {
+        "cell": "B17",
+        "formula": null
+      },
+      "displayUnit": "hours",
+      "toBaseFactor": 3600.0,
+      "baseUnit": "s",
+      "defaultDisplayValue": 1.0
+    },
+    {
+      "id": "total_cutting_and_collecting_time",
+      "row": 18,
+      "section": "Cutting and collecting",
+      "label": "Total cutting and collecting time",
+      "kind": "output",
+      "excel": {
+        "cell": "B18",
+        "formula": "=B11+B16*B17"
+      },
+      "displayUnit": "hours",
+      "toBaseFactor": 3600.0,
+      "baseUnit": "s"
+    },
+    {
+      "id": "total_milling_area",
+      "row": 20,
+      "section": "Milling",
+      "label": "Total milling area",
+      "kind": "output",
+      "excel": {
+        "cell": "B20",
+        "formula": "=B12*B5"
+      },
+      "displayUnit": "mm²",
+      "toBaseFactor": 1e-06,
+      "baseUnit": "m²"
+    },
+    {
+      "id": "milling_depth",
+      "row": 21,
+      "section": "Milling",
+      "label": "Milling depth",
+      "kind": "input",
+      "excel": {
+        "cell": "B21",
+        "formula": null
+      },
+      "displayUnit": "nm",
+      "toBaseFactor": 1e-09,
+      "baseUnit": "m",
+      "defaultDisplayValue": 10.0
+    },
+    {
+      "id": "milling_rate",
+      "row": 22,
+      "section": "Milling",
+      "label": "Milling rate",
+      "kind": "input",
+      "excel": {
+        "cell": "B22",
+        "formula": null
+      },
+      "displayUnit": "µm³ / s",
+      "toBaseFactor": 1e-18,
+      "baseUnit": "m³ / s",
+      "defaultDisplayValue": 533.0
+    },
+    {
+      "id": "time_for_one_milling_cycle",
+      "row": 23,
+      "section": "Milling",
+      "label": "Time for one milling cycle",
+      "kind": "output",
+      "excel": {
+        "cell": "B23",
+        "formula": "=B20*D20*B21*D21/(B22*D22*D23)"
+      },
+      "displayUnit": "hours",
+      "toBaseFactor": 3600.0,
+      "baseUnit": "s"
+    },
+    {
+      "id": "of_milling_cycles",
+      "row": 24,
+      "section": "Milling",
+      "label": "# of milling cycles",
+      "kind": "output",
+      "excel": {
+        "cell": "B24",
+        "formula": "=B4/B21"
+      },
+      "displayUnit": null,
+      "toBaseFactor": null,
+      "baseUnit": null
+    },
+    {
+      "id": "total_milling_time",
+      "row": 25,
+      "section": "Milling",
+      "label": "Total milling time",
+      "kind": "output",
+      "excel": {
+        "cell": "B25",
+        "formula": "=B23*B24"
+      },
+      "displayUnit": "hours",
+      "toBaseFactor": 3600.0,
+      "baseUnit": "s"
+    },
+    {
+      "id": "area_to_scan_in_each_section",
+      "row": 27,
+      "section": "Imaging",
+      "label": "Area to scan in each section",
+      "kind": "input",
+      "excel": {
+        "cell": "B27",
+        "formula": "=0.4*0.2*0.5"
+      },
+      "displayUnit": "mm²",
+      "toBaseFactor": 1e-06,
+      "baseUnit": "m²",
+      "defaultDisplayValue": 0.04
+    },
+    {
+      "id": "total_roi_area",
+      "row": 28,
+      "section": "Imaging",
+      "label": "Total roi area",
+      "kind": "output",
+      "excel": {
+        "cell": "B28",
+        "formula": "=B5*B27"
+      },
+      "displayUnit": "mm²",
+      "toBaseFactor": 1e-06,
+      "baseUnit": "m²"
+    },
+    {
+      "id": "scanning_overlap",
+      "row": 29,
+      "section": "Imaging",
+      "label": "Scanning overlap",
+      "kind": "input",
+      "excel": {
+        "cell": "B29",
+        "formula": null
+      },
+      "displayUnit": "%",
+      "toBaseFactor": 0.01,
+      "baseUnit": null,
+      "defaultDisplayValue": 30.0
+    },
+    {
+      "id": "total_scanning_area",
+      "row": 30,
+      "section": "Imaging",
+      "label": "Total scanning area",
+      "kind": "output",
+      "excel": {
+        "cell": "B30",
+        "formula": "=B28*(1+B29*D29)*B24"
+      },
+      "displayUnit": "mm²",
+      "toBaseFactor": 1e-06,
+      "baseUnit": "m²"
+    },
+    {
+      "id": "pixel_size",
+      "row": 31,
+      "section": "Imaging",
+      "label": "Pixel size",
+      "kind": "input",
+      "excel": {
+        "cell": "B31",
+        "formula": null
+      },
+      "displayUnit": "nm²",
+      "toBaseFactor": 1e-09,
+      "baseUnit": "m",
+      "defaultDisplayValue": 10.0
+    },
+    {
+      "id": "pixel_area",
+      "row": 32,
+      "section": "Imaging",
+      "label": "Pixel area",
+      "kind": "input",
+      "excel": {
+        "cell": "B32",
+        "formula": null
+      },
+      "displayUnit": "nm²",
+      "toBaseFactor": 1e-18,
+      "baseUnit": "m²",
+      "defaultDisplayValue": 100.0
+    },
+    {
+      "id": "of_pixels_to_scan",
+      "row": 33,
+      "section": "Imaging",
+      "label": "# of pixels to scan",
+      "kind": "output",
+      "excel": {
+        "cell": "B33",
+        "formula": "=B30*D30/(B32*D32)"
+      },
+      "displayUnit": null,
+      "toBaseFactor": null,
+      "baseUnit": null
+    },
+    {
+      "id": "dwell_time",
+      "row": 34,
+      "section": "Imaging",
+      "label": "Dwell time",
+      "kind": "input",
+      "excel": {
+        "cell": "B34",
+        "formula": null
+      },
+      "displayUnit": "ns",
+      "toBaseFactor": 1e-09,
+      "baseUnit": "s",
+      "defaultDisplayValue": 315.0
+    },
+    {
+      "id": "of_beams",
+      "row": 35,
+      "section": "Imaging",
+      "label": "# of beams",
+      "kind": "input",
+      "excel": {
+        "cell": "B35",
+        "formula": null
+      },
+      "displayUnit": null,
+      "toBaseFactor": null,
+      "baseUnit": null,
+      "defaultDisplayValue": 91.0
+    },
+    {
+      "id": "multisem_scanning_rate",
+      "row": 36,
+      "section": "Imaging",
+      "label": "multiSEM scanning rate",
+      "kind": "output",
+      "excel": {
+        "cell": "B36",
+        "formula": "=B35/(B34*D34)*10^-6"
+      },
+      "displayUnit": "MHz",
+      "toBaseFactor": 1000000.0,
+      "baseUnit": "Hz"
+    },
+    {
+      "id": "total_scanning_time",
+      "row": 37,
+      "section": "Imaging",
+      "label": "Total scanning time",
+      "kind": "output",
+      "excel": {
+        "cell": "B37",
+        "formula": "=B33/(B36*D36*D37)"
+      },
+      "displayUnit": "days",
+      "toBaseFactor": 86400.0,
+      "baseUnit": "s"
+    },
+    {
+      "id": "msem_fov_area_underestimate",
+      "row": 39,
+      "section": "Stage movements",
+      "label": "mSEM fov area (underestimate)",
+      "kind": "input",
+      "excel": {
+        "cell": "B39",
+        "formula": null
+      },
+      "displayUnit": "µm²",
+      "toBaseFactor": 1e-12,
+      "baseUnit": "m²",
+      "defaultDisplayValue": 17424.0
+    },
+    {
+      "id": "stage_movements",
+      "row": 40,
+      "section": "Stage movements",
+      "label": "# stage movements",
+      "kind": "output",
+      "excel": {
+        "cell": "B40",
+        "formula": "=B30*D30/(B39*D39)"
+      },
+      "displayUnit": null,
+      "toBaseFactor": null,
+      "baseUnit": null
+    },
+    {
+      "id": "stage_settling_time",
+      "row": 41,
+      "section": "Stage movements",
+      "label": "Stage settling time",
+      "kind": "input",
+      "excel": {
+        "cell": "B41",
+        "formula": null
+      },
+      "displayUnit": "seconds",
+      "toBaseFactor": null,
+      "baseUnit": "s",
+      "defaultDisplayValue": 1.5
+    },
+    {
+      "id": "total_time_for_stage_movements",
+      "row": 42,
+      "section": "Stage movements",
+      "label": "Total time for stage movements",
+      "kind": "output",
+      "excel": {
+        "cell": "B42",
+        "formula": "=B40*B41/86400"
+      },
+      "displayUnit": "days",
+      "toBaseFactor": 86400.0,
+      "baseUnit": "s"
+    },
+    {
+      "id": "time_for_one_imaging_milling_duty_cycle",
+      "row": 43,
+      "section": "Stage movements",
+      "label": "Time for one imaging - milling duty cycle",
+      "kind": "input",
+      "excel": {
+        "cell": "B43",
+        "formula": null
+      },
+      "displayUnit": "hours",
+      "toBaseFactor": 3600.0,
+      "baseUnit": "s",
+      "defaultDisplayValue": 1.0
+    },
+    {
+      "id": "total_time_for_imaging_milling_duty_cycles",
+      "row": 44,
+      "section": "Stage movements",
+      "label": "Total time for imaging milling duty cycles",
+      "kind": "output",
+      "excel": {
+        "cell": "B44",
+        "formula": "=B24*B43"
+      },
+      "displayUnit": "hours",
+      "toBaseFactor": 3600.0,
+      "baseUnit": "s"
+    },
+    {
+      "id": "total",
+      "row": 45,
+      "section": "Stage movements",
+      "label": "Total",
+      "kind": "output",
+      "excel": {
+        "cell": "B45",
+        "formula": "=(B18*D18+B25*D25+B37*D37+B42*D42+B44*D44)/D45"
+      },
+      "displayUnit": "days",
+      "toBaseFactor": 86400.0,
+      "baseUnit": "s"
+    }
+  ],
+  "directDeps": {
+    "length_along_cutting_axis": [],
+    "section_thickness": [],
+    "number_of_sections": [
+      "length_along_cutting_axis",
+      "section_thickness"
+    ],
+    "length_along_cutting_direction": [],
+    "cutting_speed": [],
+    "cutting_time_for_one_section": [
+      "length_along_cutting_direction",
+      "cutting_speed"
+    ],
+    "time_for_microtome_arm_movement": [],
+    "time_for_one_cutting_cycle": [
+      "cutting_time_for_one_section",
+      "time_for_microtome_arm_movement"
+    ],
+    "total_cutting_time": [
+      "number_of_sections",
+      "time_for_one_cutting_cycle"
+    ],
+    "area_of_one_section": [],
+    "area_for_one_4_inch_wafer": [],
+    "wafer_capacity": [],
+    "sections_that_fit_in_one_4_inch_wafer": [
+      "area_for_one_4_inch_wafer",
+      "wafer_capacity",
+      "area_of_one_section"
+    ],
+    "of_wafers_required": [
+      "number_of_sections",
+      "sections_that_fit_in_one_4_inch_wafer"
+    ],
+    "time_for_wafer_duty_cycle": [],
+    "total_cutting_and_collecting_time": [
+      "total_cutting_time",
+      "of_wafers_required",
+      "time_for_wafer_duty_cycle"
+    ],
+    "total_milling_area": [
+      "area_of_one_section",
+      "number_of_sections"
+    ],
+    "milling_depth": [],
+    "milling_rate": [],
+    "time_for_one_milling_cycle": [
+      "total_milling_area",
+      "milling_depth",
+      "milling_rate"
+    ],
+    "of_milling_cycles": [
+      "section_thickness",
+      "milling_depth"
+    ],
+    "total_milling_time": [
+      "time_for_one_milling_cycle",
+      "of_milling_cycles"
+    ],
+    "area_to_scan_in_each_section": [],
+    "total_roi_area": [
+      "number_of_sections",
+      "area_to_scan_in_each_section"
+    ],
+    "scanning_overlap": [],
+    "total_scanning_area": [
+      "total_roi_area",
+      "scanning_overlap",
+      "of_milling_cycles"
+    ],
+    "pixel_size": [],
+    "pixel_area": [],
+    "of_pixels_to_scan": [
+      "total_scanning_area",
+      "pixel_area"
+    ],
+    "dwell_time": [],
+    "of_beams": [],
+    "multisem_scanning_rate": [
+      "of_beams",
+      "dwell_time"
+    ],
+    "total_scanning_time": [
+      "of_pixels_to_scan",
+      "multisem_scanning_rate"
+    ],
+    "msem_fov_area_underestimate": [],
+    "stage_movements": [
+      "total_scanning_area",
+      "msem_fov_area_underestimate"
+    ],
+    "stage_settling_time": [],
+    "total_time_for_stage_movements": [
+      "stage_movements",
+      "stage_settling_time"
+    ],
+    "time_for_one_imaging_milling_duty_cycle": [],
+    "total_time_for_imaging_milling_duty_cycles": [
+      "of_milling_cycles",
+      "time_for_one_imaging_milling_duty_cycle"
+    ],
+    "total": [
+      "total_cutting_and_collecting_time",
+      "total_milling_time",
+      "total_scanning_time",
+      "total_time_for_stage_movements",
+      "total_time_for_imaging_milling_duty_cycles"
+    ]
+  },
+  "inputDeps": {
+    "length_along_cutting_axis": [],
+    "section_thickness": [],
+    "number_of_sections": [
+      "length_along_cutting_axis",
+      "section_thickness"
+    ],
+    "length_along_cutting_direction": [],
+    "cutting_speed": [],
+    "cutting_time_for_one_section": [
+      "cutting_speed",
+      "length_along_cutting_direction"
+    ],
+    "time_for_microtome_arm_movement": [],
+    "time_for_one_cutting_cycle": [
+      "cutting_speed",
+      "length_along_cutting_direction",
+      "time_for_microtome_arm_movement"
+    ],
+    "total_cutting_time": [
+      "cutting_speed",
+      "length_along_cutting_axis",
+      "length_along_cutting_direction",
+      "section_thickness",
+      "time_for_microtome_arm_movement"
+    ],
+    "area_of_one_section": [],
+    "area_for_one_4_inch_wafer": [],
+    "wafer_capacity": [],
+    "sections_that_fit_in_one_4_inch_wafer": [
+      "wafer_capacity"
+    ],
+    "of_wafers_required": [
+      "length_along_cutting_axis",
+      "section_thickness",
+      "wafer_capacity"
+    ],
+    "time_for_wafer_duty_cycle": [],
+    "total_cutting_and_collecting_time": [
+      "cutting_speed",
+      "length_along_cutting_axis",
+      "length_along_cutting_direction",
+      "section_thickness",
+      "time_for_microtome_arm_movement",
+      "time_for_wafer_duty_cycle",
+      "wafer_capacity"
+    ],
+    "total_milling_area": [
+      "length_along_cutting_axis",
+      "section_thickness"
+    ],
+    "milling_depth": [],
+    "milling_rate": [],
+    "time_for_one_milling_cycle": [
+      "length_along_cutting_axis",
+      "milling_depth",
+      "milling_rate",
+      "section_thickness"
+    ],
+    "of_milling_cycles": [
+      "milling_depth",
+      "section_thickness"
+    ],
+    "total_milling_time": [
+      "length_along_cutting_axis",
+      "milling_depth",
+      "milling_rate",
+      "section_thickness"
+    ],
+    "area_to_scan_in_each_section": [],
+    "total_roi_area": [
+      "length_along_cutting_axis",
+      "section_thickness"
+    ],
+    "scanning_overlap": [],
+    "total_scanning_area": [
+      "length_along_cutting_axis",
+      "milling_depth",
+      "scanning_overlap",
+      "section_thickness"
+    ],
+    "pixel_size": [],
+    "pixel_area": [],
+    "of_pixels_to_scan": [
+      "length_along_cutting_axis",
+      "milling_depth",
+      "pixel_area",
+      "scanning_overlap",
+      "section_thickness"
+    ],
+    "dwell_time": [],
+    "of_beams": [],
+    "multisem_scanning_rate": [
+      "dwell_time",
+      "of_beams"
+    ],
+    "total_scanning_time": [
+      "dwell_time",
+      "length_along_cutting_axis",
+      "milling_depth",
+      "of_beams",
+      "pixel_area",
+      "scanning_overlap",
+      "section_thickness"
+    ],
+    "msem_fov_area_underestimate": [],
+    "stage_movements": [
+      "length_along_cutting_axis",
+      "milling_depth",
+      "scanning_overlap",
+      "section_thickness"
+    ],
+    "stage_settling_time": [],
+    "total_time_for_stage_movements": [
+      "length_along_cutting_axis",
+      "milling_depth",
+      "scanning_overlap",
+      "section_thickness",
+      "stage_settling_time"
+    ],
+    "time_for_one_imaging_milling_duty_cycle": [],
+    "total_time_for_imaging_milling_duty_cycles": [
+      "milling_depth",
+      "section_thickness",
+      "time_for_one_imaging_milling_duty_cycle"
+    ],
+    "total": [
+      "cutting_speed",
+      "dwell_time",
+      "length_along_cutting_axis",
+      "length_along_cutting_direction",
+      "milling_depth",
+      "milling_rate",
+      "of_beams",
+      "pixel_area",
+      "scanning_overlap",
+      "section_thickness",
+      "stage_settling_time",
+      "time_for_microtome_arm_movement",
+      "time_for_one_imaging_milling_duty_cycle",
+      "wafer_capacity"
+    ]
+  }
+}
