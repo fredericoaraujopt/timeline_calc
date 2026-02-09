@@ -395,7 +395,7 @@
         "cell": "B31",
         "formula": null
       },
-      "displayUnit": "nm²",
+      "displayUnit": "nm",
       "toBaseFactor": 1e-09,
       "baseUnit": "m",
       "defaultDisplayValue": 10.0
@@ -405,15 +405,14 @@
       "row": 32,
       "section": "Imaging",
       "label": "Pixel area",
-      "kind": "input",
+      "kind": "output",
       "excel": {
         "cell": "B32",
-        "formula": null
+        "formula": "=B31^2"
       },
       "displayUnit": "nm²",
       "toBaseFactor": 1e-18,
-      "baseUnit": "m²",
-      "defaultDisplayValue": 100.0
+      "baseUnit": "m²"
     },
     {
       "id": "of_pixels_to_scan",
@@ -660,7 +659,9 @@
       "of_milling_cycles"
     ],
     "pixel_size": [],
-    "pixel_area": [],
+    "pixel_area": [
+      "pixel_size"
+    ],
     "of_pixels_to_scan": [
       "total_scanning_area",
       "pixel_area"
@@ -780,11 +781,13 @@
       "section_thickness"
     ],
     "pixel_size": [],
-    "pixel_area": [],
+    "pixel_area": [
+      "pixel_size"
+    ],
     "of_pixels_to_scan": [
       "length_along_cutting_axis",
       "milling_depth",
-      "pixel_area",
+      "pixel_size",
       "scanning_overlap",
       "section_thickness"
     ],
@@ -799,7 +802,7 @@
       "length_along_cutting_axis",
       "milling_depth",
       "of_beams",
-      "pixel_area",
+      "pixel_size",
       "scanning_overlap",
       "section_thickness"
     ],
@@ -832,7 +835,7 @@
       "milling_depth",
       "milling_rate",
       "of_beams",
-      "pixel_area",
+      "pixel_size",
       "scanning_overlap",
       "section_thickness",
       "stage_settling_time",

@@ -60,9 +60,73 @@ a{ color: inherit; }
 }
 
 .section h2{
-  margin: 0 0 10px;
+  margin: 0;
   font-size: 18px;
   letter-spacing: 0.01em;
+}
+
+.sectionToggle{
+  width: 100%;
+  margin: 0 0 10px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sectionToggleIcon{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.85);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.sectionColumnsHead{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+  gap: 10px 14px;
+  margin: 0 0 8px;
+  padding: 0 8px 6px;
+  border-bottom: 1px solid rgba(2,43,58,0.14);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sectionColumnsHead span:last-child{
+  text-align: right;
+}
+
+.sectionRowsToggleWrap{
+  display: flex;
+  justify-content: flex-start;
+  margin: 6px 0 4px;
+}
+
+.sectionRowsToggle{
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.84);
+  color: var(--text);
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 10px;
+  cursor: pointer;
+  text-transform: lowercase;
+  font-family: var(--font-sans), ui-sans-serif, system-ui;
 }
 
 .grid{
@@ -110,6 +174,15 @@ a{ color: inherit; }
 .rowBlockEmphasis .labelText,
 .rowBlockEmphasis .output{
   font-size: 15px;
+}
+
+.rowBlockEmphasis.rowBlockOutput .grid{
+  outline: none;
+}
+
+.rowBlockEmphasis .output{
+  border-style: solid;
+  border-color: rgba(2,43,58,0.18);
 }
 
 .rowBlockEmphasis .grid::before,
@@ -311,7 +384,8 @@ a{ color: inherit; }
 }
 
 @media (max-width: 860px){
-  .grid{
+  .grid,
+  .sectionColumnsHead{
     grid-template-columns: minmax(0, 1fr) minmax(180px, 48vw);
   }
   .input{
@@ -326,9 +400,13 @@ a{ color: inherit; }
   .container{
     padding: 20px 12px 36px;
   }
-  .grid{
-    grid-template-columns: 1fr;
-    gap: 8px;
+  .grid,
+  .sectionColumnsHead{
+    grid-template-columns: minmax(0, 1fr) minmax(150px, 45vw);
+    gap: 8px 10px;
+  }
+  .sectionColumnsHead{
+    font-size: 10px;
   }
   .valueCell{
     justify-content: flex-end;

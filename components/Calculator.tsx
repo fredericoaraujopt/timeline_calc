@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import cfg from "../calculator/config.json";
 import type { Config, RowDef } from "../calculator/engine";
 import { buildInitialState, computeAll, fromBase, readableFormula } from "../calculator/engine";
@@ -85,6 +85,51 @@ export function Calculator() {
   const [state, setState] = useState(() => buildInitialState(rows));
   const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
   const [hoveredInfoId, setHoveredInfoId] = useState<string | null>(null);
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
+  const [showCollapsedRowsBySection, setShowCollapsedRowsBySection] = useState<Record<string, boolean>>({});
+  const defaultVisibleInputIds = useMemo(
+    () =>
+      new Set([
+        "length_along_cutting_axis",
+        "section_thickness",
+        "cutting_speed",
+        "area_of_one_section",
+        "milling_depth",
+        "milling_rate",
+        "area_to_scan_in_each_section",
+        "pixel_size",
+        "dwell_time",
+        "stage_settling_time",
+      ]),
+    [],
+  );
+
+  function isKeyOutputRow(r: RowDef) {
+    return r.kind === "output" && keyOutputLabels.has(r.label.trim().toLowerCase());
+  }
+
+  const defaultCollapsedRowIds = useMemo(
+    () =>
+      new Set(
+        rows
+          .filter(r => !isKeyOutputRow(r) && !defaultVisibleInputIds.has(r.id))
+          .map(r => r.id),
+      ),
+    [rows, defaultVisibleInputIds, keyOutputLabels],
+  );
+
+  useEffect(() => {
+    setCollapsedSections((prev) => {
+      const next: Record<string, boolean> = {};
+      for (const section of sections) next[section] = prev[section] ?? false;
+      return next;
+    });
+    setShowCollapsedRowsBySection((prev) => {
+      const next: Record<string, boolean> = {};
+      for (const section of sections) next[section] = prev[section] ?? false;
+      return next;
+    });
+  }, [sections]);
 
   const { baseValues } = useMemo(() => computeAll(rows, state), [rows, state]);
   const inspectedId = hoveredRowId;
@@ -131,7 +176,7 @@ export function Calculator() {
     const isTarget = inspectedId === id;
     const isInfoHovered = hoveredInfoId === id;
     const isGrandTotal = totalRowIds.has(id);
-    const isEmphasisRow = keyOutputLabels.has(r.label.trim().toLowerCase());
+    const isEmphasisRow = isKeyOutputRow(r);
     const hasBothEmphasisLines = r.id === "total_cutting_time";
 
     const unitOptions = unitOptionsForBase(r.baseUnit);
@@ -259,10 +304,60 @@ export function Calculator() {
 
         if (sectionRows.length === 0) return null;
 
+        const inputRows = sectionRows.filter(r => r.kind === "input");
+        const outputRows = sectionRows.filter(r => r.kind === "output");
+        const isSectionCollapsed = collapsedSections[section] ?? false;
+        const orderedRows = [...inputRows, ...outputRows];
+        const sectionBaseRows = isSectionCollapsed
+          ? orderedRows.filter(isKeyOutputRow)
+          : orderedRows;
+        const keyOutputRows = sectionBaseRows.filter(isKeyOutputRow);
+        const nonKeyRows = sectionBaseRows.filter(r => !isKeyOutputRow(r));
+        const hasOptionalRows = nonKeyRows.some(r => defaultCollapsedRowIds.has(r.id));
+        const showCollapsedRows = showCollapsedRowsBySection[section] ?? false;
+        const visibleNonKeyRows = nonKeyRows.filter(r => showCollapsedRows || !defaultCollapsedRowIds.has(r.id));
+        const hasVisibleRows = visibleNonKeyRows.length > 0 || keyOutputRows.length > 0;
+        const shouldShowColumnHead = hasVisibleRows;
+
         return (
           <section key={section} className="card section">
-            {section !== "Overview" && <h2>{section}</h2>}
-            {sectionRows.map(r => renderRow(r.id))}
+            {section !== "Overview" ? (
+              <button
+                type="button"
+                className="sectionToggle"
+                aria-expanded={!isSectionCollapsed}
+                onClick={() => {
+                  setCollapsedSections(prev => ({ ...prev, [section]: !(prev[section] ?? false) }));
+                }}
+              >
+                <h2>{section}</h2>
+                <span className="sectionToggleIcon" aria-hidden>
+                  {isSectionCollapsed ? "+" : "−"}
+                </span>
+              </button>
+            ) : null}
+
+            {shouldShowColumnHead ? (
+              <div className="sectionColumnsHead" aria-hidden="true">
+                <span>Parameter</span>
+                <span>Value</span>
+              </div>
+            ) : null}
+            {visibleNonKeyRows.map(r => renderRow(r.id))}
+            {!isSectionCollapsed && hasOptionalRows ? (
+              <div className="sectionRowsToggleWrap">
+                <button
+                  type="button"
+                  className="sectionRowsToggle"
+                  onClick={() => {
+                    setShowCollapsedRowsBySection(prev => ({ ...prev, [section]: !(prev[section] ?? false) }));
+                  }}
+                >
+                  {showCollapsedRows ? "hide" : "show"}
+                </button>
+              </div>
+            ) : null}
+            {keyOutputRows.map(r => renderRow(r.id))}
           </section>
         );
       })}
@@ -275,9 +370,6 @@ export function Calculator() {
 
       <section className="card footer">
         <SuggestionsBox />
-        <div className="note">
-          Reach out to <a href="mailto:frdfaa2@cam.ac.uk">frdfaa2@cam.ac.uk</a> if you have any feedback or questions : )
-        </div>
       </section>
     </>
   );

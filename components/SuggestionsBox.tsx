@@ -37,7 +37,7 @@ export function SuggestionsBox() {
       <div className="suggestBox">
         <textarea
           className="textarea"
-          placeholder="Found a wrong assumption or want a new parameter? Please write your corrections here."
+          placeholder="Reach out to frdfaa2@cam.ac.uk if you have any feedback or questions : )"
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
