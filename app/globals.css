@@ -130,6 +130,19 @@ a{ color: inherit; }
   text-align: right;
 }
 
+.sectionColumnsHeadParameter{
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: center;
+}
+
+.sectionColumnsHeadParameter::before{
+  content: "";
+  width: 22px;
+  height: 22px;
+}
+
 .sectionRowsToggleWrap{
   display: flex;
   justify-content: flex-start;
@@ -154,6 +167,7 @@ a{ color: inherit; }
   grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
   gap: 10px 14px;
   align-items: center;
+  padding: 0 8px;
   transition: background-color 140ms ease, box-shadow 140ms ease;
 }
 
@@ -200,9 +214,15 @@ a{ color: inherit; }
   outline: none;
 }
 
+.rowBlockEmphasis .grid{
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
 .rowBlockEmphasis .output{
   border-style: solid;
   border-color: rgba(2,43,58,0.18);
+  min-width: 132px;
 }
 
 .rowBlockEmphasis .grid::before,
@@ -228,6 +248,7 @@ a{ color: inherit; }
 .rowBlockGrandTotal .output{
   font-size: 20px;
   font-weight: 800;
+  min-width: 168px;
 }
 
 .rowBlockGrandTotal .grid::before,
@@ -236,9 +257,10 @@ a{ color: inherit; }
 }
 
 .rowLabel{
-  display: flex;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
   align-items: center;
-  gap: 8px;
+  column-gap: 8px;
   min-height: 34px;
   min-width: 0;
 }
@@ -317,6 +339,17 @@ a{ color: inherit; }
   position: relative;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+}
+
+.infoSpacer{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
 }
 
 .popover{
@@ -364,6 +397,45 @@ a{ color: inherit; }
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
+}
+
+.citationBlock{
+  border-top: 1px solid rgba(2,43,58,0.14);
+  padding-top: 12px;
+}
+
+.citationCodeWrap{
+  position: relative;
+}
+
+.citationCode{
+  margin: 6px 0 0;
+  padding-right: 72px;
+}
+
+.citationInlineCopyBtn{
+  position: absolute;
+  top: 17px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  background: transparent;
+  color: rgba(2,43,58,0.58);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+.citationInlineCopyBtn:hover{
+  color: rgba(2,43,58,0.86);
+}
+
+.citationInlineCopyBtn:focus-visible{
+  outline: 2px solid rgba(2,43,58,0.35);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
 .suggestBox{

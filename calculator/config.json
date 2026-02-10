@@ -158,7 +158,7 @@
       "id": "area_for_one_4_inch_wafer",
       "row": 13,
       "section": "Cutting and collecting",
-      "label": "Area for one 4-inch wafer",
+      "label": "Area of one wafer",
       "kind": "input",
       "excel": {
         "cell": "B13",
@@ -335,12 +335,12 @@
       "kind": "input",
       "excel": {
         "cell": "B27",
-        "formula": "=0.4*0.2*0.5"
+        "formula": null
       },
-      "displayUnit": "mm²",
-      "toBaseFactor": 1e-06,
-      "baseUnit": "m²",
-      "defaultDisplayValue": 0.04
+      "displayUnit": "%",
+      "toBaseFactor": 0.01,
+      "baseUnit": null,
+      "defaultDisplayValue": 50.0
     },
     {
       "id": "total_roi_area",
@@ -350,7 +350,7 @@
       "kind": "output",
       "excel": {
         "cell": "B28",
-        "formula": "=B5*B27"
+        "formula": "=B5*B12*B27*D27"
       },
       "displayUnit": "mm²",
       "toBaseFactor": 1e-06,
@@ -650,6 +650,7 @@
     "area_to_scan_in_each_section": [],
     "total_roi_area": [
       "number_of_sections",
+      "area_of_one_section",
       "area_to_scan_in_each_section"
     ],
     "scanning_overlap": [],
@@ -770,6 +771,8 @@
     ],
     "area_to_scan_in_each_section": [],
     "total_roi_area": [
+      "area_of_one_section",
+      "area_to_scan_in_each_section",
       "length_along_cutting_axis",
       "section_thickness"
     ],

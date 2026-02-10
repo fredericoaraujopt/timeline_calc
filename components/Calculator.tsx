@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import cfg from "../calculator/config.json";
+import pkg from "../package.json";
 import type { Config, RowDef } from "../calculator/engine";
 import { buildInitialState, computeAll, fromBase, readableFormula } from "../calculator/engine";
 import { unitOptionsForBase, type UnitOption } from "../calculator/units";
@@ -9,6 +10,18 @@ import { InfoPopover } from "./InfoPopover";
 import { SuggestionsBox } from "./SuggestionsBox";
 
 const config = cfg as unknown as Config;
+const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION ?? pkg.version;
+const APP_COMMIT = process.env.NEXT_PUBLIC_APP_COMMIT ?? "local";
+const CITATION_DATE = process.env.NEXT_PUBLIC_APP_DATE ?? "1970-01-01";
+const CITATION_BIBTEX = [
+  "@software{araujo_connectome_timeline,",
+  "  author = {Frederico Araujo},",
+  "  title = {Connectome Timeline Calculator},",
+  `  version = {${APP_VERSION}},`,
+  `  date = {${CITATION_DATE}},`,
+  //`  note = {Git commit ${APP_COMMIT}}`,
+  "}",
+].join("\n");
 
 function formatNumber(n: number) {
   if (!isFinite(n)) return "—";
@@ -57,6 +70,7 @@ export function Calculator() {
       "total milling time",
       "total scanning time",
       "total time for stage movements",
+      "total time for imaging milling duty cycles",
       "total",
     ])
   ), []);
@@ -92,6 +106,7 @@ export function Calculator() {
   const [hoveredInfoId, setHoveredInfoId] = useState<string | null>(null);
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
   const [showCollapsedRowsBySection, setShowCollapsedRowsBySection] = useState<Record<string, boolean>>({});
+  const [citationCopied, setCitationCopied] = useState(false);
   const defaultVisibleInputIds = useMemo(
     () =>
       new Set([
@@ -281,6 +296,28 @@ export function Calculator() {
     URL.revokeObjectURL(url);
   }
 
+  async function copyCitation() {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(CITATION_BIBTEX);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = CITATION_BIBTEX;
+        textarea.setAttribute("readonly", "true");
+        textarea.style.position = "absolute";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+      setCitationCopied(true);
+      window.setTimeout(() => setCitationCopied(false), 1800);
+    } catch {
+      setCitationCopied(false);
+    }
+  }
+
   function renderRow(id: string) {
     const r = rows.find(x => x.id === id);
     if (!r) return null;
@@ -336,7 +373,7 @@ export function Calculator() {
                 )}
               </span>
             ) : (
-              <span style={{ width: 22 }} />
+              <span className="infoSpacer" aria-hidden="true" />
             )}
             <span className="labelText">{r.label}</span>
           </div>
@@ -434,7 +471,7 @@ export function Calculator() {
 
             {shouldShowColumnHead ? (
               <div className="sectionColumnsHead" aria-hidden="true">
-                <span>Parameter</span>
+                <span className="sectionColumnsHeadParameter">Parameter</span>
                 <span>Value</span>
               </div>
             ) : null}
@@ -465,6 +502,22 @@ export function Calculator() {
 
       <section className="card footer">
         <SuggestionsBox />
+        <div className="citationBlock">
+          <p className="popTitle">
+            <strong>Citation</strong>
+          </p>
+          <div className="citationCodeWrap">
+            <button
+              type="button"
+              className="citationInlineCopyBtn"
+              onClick={copyCitation}
+              aria-label="Copy citation to clipboard"
+            >
+              {citationCopied ? "Copied" : "Copy"}
+            </button>
+            <pre className="code citationCode">{CITATION_BIBTEX}</pre>
+          </div>
+        </div>
       </section>
     </>
   );
